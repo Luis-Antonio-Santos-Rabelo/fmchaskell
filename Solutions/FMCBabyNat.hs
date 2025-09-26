@@ -34,24 +34,24 @@ infixl 6 +
 
 -- Output: O means False, S O means True
 isZero :: Nat -> Nat
-isZero O = S O
+isZero O     = S O
 isZero (S n) = O
 
 -- pred is the predecessor but we define zero's to be zero
 pred :: Nat -> Nat
-pred O = O
+pred O     = O
 pred (S n) = n
 
 -- Output: O means False, S O means True
 even :: Nat -> Nat
-even O = S O
-even (S O) = O
+even O         = S O
+even (S O)     = O
 even (S (S n)) = even n
 
 
 odd :: Nat -> Nat
-odd O = O
-odd (S O) = S O
+odd O         = O
+odd (S O)     = S O
 odd (S (S n)) = odd n
 
 -- This is called the dotminus or monus operator
@@ -62,33 +62,40 @@ monus :: Nat -> Nat -> Nat
 monus = (-*)
 
 (-*) :: Nat -> Nat -> Nat
-n -* O = n
-O -* n = n
+n   -* O   = n
+O   -* n   = n
 S n -* S m = n -* m
 
 -- multiplication
 (*) :: Nat -> Nat -> Nat
-n * O = O
-O * n = O
+n * O   = O
+O * n   = O
 n * S m = n * m + n 
 
 infixl 7 *
 
 -- exponentiation
 (^) :: Nat -> Nat -> Nat
-n ^ O = S O
+n ^ O   = S O
 n ^ S m = n ^ m * n
  
 
-infixr 8 ^
+infixr 9 ^
 
+-- def (<)
+(<) :: Nat -> Nat -> Nat
+n    < O    = O
+O    < S n  = S O
+S n  < S m  = n < m
 -- quotient
 (/) :: Nat -> Nat -> Nat
 n / O = undefined
 n / m =
-    case n <= m of
-      
+    case n < m of
+      S O -> O
+      O   -> S O + ((n -* m) / m)
 
+infixl 8 /
 
 -- remainder
 (%) :: Nat -> Nat -> Nat
