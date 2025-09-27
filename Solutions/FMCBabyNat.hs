@@ -23,6 +23,7 @@ six   = S five
 seven = S six
 eight = S seven
 
+
 -- addition
 (+) :: Nat -> Nat -> Nat
 n + O   = n
@@ -31,6 +32,7 @@ n + S m = S (n + m)
  -- syntactic associativity: L
  -- syntactic precedence: 6
 infixl 6 +
+
 
 -- Output: O means False, S O means True
 isZero :: Nat -> Nat
@@ -61,10 +63,13 @@ odd (S (S n)) = odd n
 monus :: Nat -> Nat -> Nat
 monus = (-*)
 
+
 (-*) :: Nat -> Nat -> Nat
 n   -* O   = n
 O   -* n   = n
 S n -* S m = n -* m
+
+infixl 6 -*
 
 -- multiplication
 (*) :: Nat -> Nat -> Nat
@@ -74,13 +79,15 @@ n * S m = n * m + n
 
 infixl 7 *
 
+
 -- exponentiation
 (^) :: Nat -> Nat -> Nat
 n ^ O   = S O
 n ^ S m = n ^ m * n
  
+infixr 8 ^
 
-infixr 9 ^
+
 
 -- def (<)
 (<) :: Nat -> Nat -> Nat
@@ -95,35 +102,55 @@ n / m =
       S O -> O
       O   -> S O + ((n -* m) / m)
 
-infixl 8 /
+infixl 7 /
+
 
 -- remainder
 (%) :: Nat -> Nat -> Nat
-(%) = undefined
+n % O   = undefined
+n % m   =
+    case n < m of
+      S O  ->  O
+      O    ->  n -* ((n / m) * m) 
+
 
 -- divides
 -- just for a change, we start by defining the "symbolic" operator
 -- and then define `devides` as a synonym to it
 -- again, outputs: O means False, S O means True
 (|||) :: Nat -> Nat -> Nat
-(|||) = undefined
+n |||  m = isZero (m % n)
 
 -- x `absDiff` y = |x - y|
 -- (Careful here: this - is the actual minus operator we know from the integers!)
 absDiff :: Nat -> Nat -> Nat
-absDiff = undefined
+absDiff = (|-|)
 
 (|-|) :: Nat -> Nat -> Nat
-(|-|) = absDiff
+n |-| m =
+    case n < m of
+      S O -> m -* n
+      O   -> n -* m
 
 factorial :: Nat -> Nat
-factorial = undefined
+factorial O = S O
+factorial (S n) = S n * factorial n
 
 -- signum of a number (-1, 0, or 1)
+-- não faria sentido definir sg _ = -1 se estamos no universo dos nats
 sg :: Nat -> Nat
-sg = undefined
+sg O     = O
+sg (S n) = S O
 
 -- lo b a is the floor of the logarithm base b of a
 lo :: Nat -> Nat -> Nat
-lo = undefined
+lo O n = undefined
+lo n O = undefined
+lo (S O) n = undefined
+lo n m = 
+    case m < n of
+      S O -> O
+      O   -> S O + lo n (m / n)
+
+infixr 8 `lo`
 
