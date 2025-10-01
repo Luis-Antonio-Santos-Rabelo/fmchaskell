@@ -123,6 +123,8 @@ odd (S (S n)) = odd n
 n <+> O   = n
 n <+> S m = S (n <+> m)
 
+infixl 6 <+>
+
 -- This is called the dotminus or monus operator
 -- (also: proper subtraction, arithmetic subtraction, ...).
 -- It behaves like subtraction, except that it returns 0
@@ -135,6 +137,8 @@ n   <-> O   = n
 O   <-> n   = n
 S n <-> S m = n <-> m
 
+infixl 6 <->
+
 
 
 
@@ -143,8 +147,10 @@ times :: Nat -> Nat -> Nat
 times = (<*>)
 
 (<*>) :: Nat -> Nat -> Nat
-n <*> O   = O
+_ <*> O   = O
 n <*> S m = n <*> m <+> n
+
+infixr 7 <*>
 
 
 
@@ -157,8 +163,10 @@ exp :: Nat -> Nat -> Nat
 exp = (<^>)
 
 (<^>) :: Nat -> Nat -> Nat
-n <^> O   = S O
+_ <^> O   = S O
 n <^> S m = n <^> m <*> n
+
+infixr 8 <^>
 
 
 
@@ -168,6 +176,8 @@ n <^> S m = n <^> m <*> n
 _ </> O = undefined
 n </> m =
     if n <= m then O else S O <+> ((n <-> m) </> m)
+
+infixl 7 </>
 
 -- remainder
 (<%>) :: Nat -> Nat -> Nat
@@ -207,11 +217,13 @@ sg (S n) = S O
 
 -- lo b a is the floor of the logarithm base b of a
 lo :: Nat -> Nat -> Nat
-lo O n = undefined
-lo n O = undefined
-lo (S O) n = undefined
+lo O _ = undefined
+lo _ O = undefined
+lo (S O) _ = undefined
 lo n m = 
     if m <= n then O else S O <+> lo n (m </> n)
+
+infixr 8 `lo`
 
 
 ----------------------------------------------------------------
